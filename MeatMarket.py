@@ -8,7 +8,7 @@ import warnings
 warnings.simplefilter('ignore')
 ##Interactive visuals
 import streamlit as st
-pip install -r requirements.txt
+#pip install -r requirements.txt
 # Load data
 df = pd.read_csv('Meat_market.csv')
 df['Item'].unique()
