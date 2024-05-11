@@ -7,8 +7,8 @@ import numpy as np
 import warnings 
 warnings.simplefilter('ignore')
 ##Interactive visuals
-import plotly.express as px
 import streamlit as st
+pip install -r requirements.txt
 # Load data
 df = pd.read_csv('Meat_market.csv')
 df['Item'].unique()
@@ -43,13 +43,13 @@ left_column, middle_column, right_column = st.columns(3)
 with left_column:
     
     st.header(f'{Country}')
-    st.subheader(f'Average Population: {Population:,} inhabitants')
-    st.subheader(f'Average Land Area: {Land:,} Hectare')
+    st.subheader(f'Average Population: {Population:,} inh')
+    st.subheader(f'Average Land Area: {Land:,} Ha')
                        
 with middle_column:
     st.header("Market")
-    st.subheader(f'Total Production: {Total_Production:,} tonnes') 
-    st.subheader(f'Total Export Quantity: {Total_export:,} tonnes')
+    st.subheader(f'Total Production: {Total_Production:,} t') 
+    st.subheader(f'Total Export Quantity: {Total_export:,} t')
     
 # Placing a markdown   
 st.markdown("""---""")
@@ -98,7 +98,7 @@ with col2:
 
     Prod_.update_layout(
         plot_bgcolor="rgba(0,0,0,0)",
-        xaxis=dict(showgrid=False, title='Export Quantity in Tonnes' )
+        xaxis=dict(showgrid=False, title='Export Quantity in t' )
     )
 # plotting
     st.plotly_chart(exp_)   
@@ -109,7 +109,7 @@ st.markdown("""---""")
 #line plot by the years selected
 yearly_data = df_selection.groupby('Year').agg({
     'Production': 'sum',
-    'Export Quantity': 'sum'
+    'Export Quantity':'sum'
 }).reset_index()
 
 yearly_data['Production'] *= 1000
