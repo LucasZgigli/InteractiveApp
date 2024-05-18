@@ -132,7 +132,7 @@ with col3:
 # placing another markdown    
 st.markdown("""---""")
 
-#line plot by the years selected
+# Group by Year and Item
 yearly_data = df_selection.groupby(['Year', 'Item']).agg({
     'Production': 'sum',
     'Export Quantity': 'sum',
