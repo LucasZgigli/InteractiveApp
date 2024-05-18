@@ -35,9 +35,9 @@ df_selection = df.query('Year >= @year_range[0] and Year <= @year_range[1]  and 
 
 #Main page
 st.title('European Meat Market ')
-Country = df_selection['Area'].iloc[0]
+Country area = df_selection['Area'].iloc[0]
 Population = int(df_selection['Population'].mean())*1000 # original unit is *1000 inhabitants
-Land = int(df_selection['Land area'].mean()*1000) # same as land area multiplied by 1000 hectars
+Land = int(df_selection['Country area'].mean()*1000) # same as land area multiplied by 1000 hectars
 Pastures = int(df_selection['Permanent meadows and pastures'].mean()*1000)
 Total_export = int(df_selection['Export Quantity'].sum()*1000)
 Total_Production = int(df_selection['Production'].sum()*1000)
@@ -50,12 +50,12 @@ with left_column:
     
     st.header(f'{Country}')
     st.subheader(f'Average Population: {Population:,} inh')
-    st.subheader(f'Average Land Area: {Land:,} Ha')
+    st.subheader(f'Average Land Area: {Country area:,}Ha')
                        
 with middle_column:
-    st.subheader(f'Total Production: {Total_Production:,} t') 
-    st.subheader(f'Total Export Quantity: {Total_export:,} t')
-    st.subheader(f'Total Supply Quantity: {Total_SupplyQuantity:,} t')
+    st.subheader(f'Total Production: {Total_Production:,}t') 
+    st.subheader(f'Total Export Quantity: {Total_export:,}t')
+    st.subheader(f'Total Supply Quantity: {Total_SupplyQuantity:,}t')
     st.subheader(f'GDP: {GDP:,} in Million USD') 
     
 # Placing a markdown   
