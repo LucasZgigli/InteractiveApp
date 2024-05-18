@@ -9,6 +9,7 @@ warnings.simplefilter('ignore')
 import pickle
 from tensorflow.keras.models import load_model
 from sklearn.preprocessing import StandardScaler, LabelEncoder
+import pickle
 ##Interactive visuals
 import plotly.express as px
 import streamlit as st
@@ -234,11 +235,13 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True)
 
 
-# Define paths
-model_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'meat_market_model.h5')
-scaler_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'scaler.pkl')
-item_encoder_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'Item_encoder.pkl')
-area_encoder_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'Area_encoder.pkl')
+# Define paths using raw string literals to avoid escape sequence issues
+base_path = r'C:\Users\lucas\OneDrive\Área de Trabalho\CCT\Github\InteractiveApp'
+
+model_path = os.path.join(base_path, 'meat_market_model.h5')
+scaler_path = os.path.join(base_path, 'scaler.pkl')
+item_encoder_path = os.path.join(base_path, 'Item_encoder.pkl')
+area_encoder_path = os.path.join(base_path, 'Area_encoder.pkl')
 
 # Function to check if file exists and is readable
 def check_file(path):
@@ -274,7 +277,7 @@ if check_file(scaler_path):
     except Exception as e:
         st.error(f"Error loading scaler: {e}")
         print(f"Error loading scaler: {e}")
-        
+
 # Load the item encoder
 if check_file(item_encoder_path):
     try:
@@ -296,10 +299,12 @@ if check_file(area_encoder_path):
     except Exception as e:
         st.error(f"Error loading area encoder: {e}")
         print(f"Error loading area encoder: {e}")
-        
+
+# Streamlit UI
 st.title("Meat Market Prediction")
 st.markdown("""---""")
 st.header("Predict Future Values")
+
 # Create input fields for user to enter prediction data
 if 'item_encoder' in locals() and hasattr(item_encoder, 'classes_'):
     item_input = st.selectbox('Item', options=item_encoder.classes_)
@@ -319,18 +324,14 @@ production_input = st.number_input('Production (in tonnes)', min_value=0)
 supply_input = st.number_input('Domestic Supply Quantity (in tonnes)', min_value=0)
 gdp_input = st.number_input('GDP (in Million USD)', min_value=0)
 
+# Function to preprocess inputs similar to training data
 def preprocess_inputs(inputs):
-    # Extract numerical inputs
-    num_inputs = inputs[2:]
-    
-    # Scale numerical inputs
-    scaled_num_inputs = scaler.transform([num_inputs])
-    
-    # Combine categorical and scaled numerical inputs
-    preprocessed_inputs = [inputs[0]] + [inputs[1]] + scaled_num_inputs[0].tolist()
+    num_inputs = inputs[2:]  # Extract numerical inputs
+    scaled_num_inputs = scaler.transform([num_inputs])  # Scale numerical inputs
+    preprocessed_inputs = [inputs[0]] + [inputs[1]] + scaled_num_inputs[0].tolist()  # Combine inputs
     return preprocessed_inputs
 
-
+# Make predictions based on user inputs
 if st.button('Predict'):
     item_encoded = item_encoder.transform([item_input])[0]
     area_encoded = area_encoder.transform([area_input])[0]
@@ -338,20 +339,6 @@ if st.button('Predict'):
     processed_inputs = preprocess_inputs(inputs)
     prediction = model.predict([processed_inputs])
     st.subheader(f'Predicted Value: {prediction[0][0]:.2f}')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
