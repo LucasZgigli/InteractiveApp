@@ -10,3 +10,4 @@ streamlit
 scikit-learn
 pandas
 h5py
+scikeras
