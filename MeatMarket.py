@@ -40,7 +40,7 @@ Land = int(df_selection['Land area'].mean()*1000) # same as land area multiplied
 Pastures = int(df_selection['Permanent meadows and pastures'].mean()*1000)
 Total_export = int(df_selection['Export Quantity'].sum()*1000)
 Total_Production = int(df_selection['Production'].sum()*1000)
-Total_SupplyQuantity = int(df_selection['Supply Quantity'].sum()*1000)
+Total_SupplyQuantity = int(df_selection['Domestic supply quantity'].sum()*1000)
 GDP = int(df_selection['GDP in Million USD'].mean())
           
 #Splitting the header into 3 columns
