@@ -6,7 +6,6 @@ import os
 import numpy as np
 import warnings 
 warnings.simplefilter('ignore')
-from keras.models import load_model
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 import pickle
 ##Interactive visuals
