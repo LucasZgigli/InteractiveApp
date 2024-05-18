@@ -226,3 +226,14 @@ fig.update_layout(
 
 # Plotting
 st.plotly_chart(fig, use_container_width=True)
+
+
+st.markdown("""---""")
+st.header("Predict Future Values")
+population_input = st.number_input('Population (in thousands)', min_value=0)
+land_input = st.number_input('Land Area (in hectares)', min_value=0)
+pastures_input = st.number_input('Permanent Meadows and Pastures (in hectares)', min_value=0)
+export_input = st.number_input('Export Quantity (in tonnes)', min_value=0)
+production_input = st.number_input('Production (in tonnes)', min_value=0)
+supply_input = st.number_input('Domestic Supply Quantity (in tonnes)', min_value=0)
+gdp_input = st.number_input
