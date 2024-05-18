@@ -37,7 +37,7 @@ st.title('European Meat Market ')
 Country = df_selection['Area'].iloc[0]
 Population = int(df_selection['Population'].mean())*1000 # original unit is *1000 inhabitants
 Land = int((df_selection['Land area'].mean()*1000)) # same as land area multiplied by 1000 hectars
-Pastures = int(int(df_selection['Permanent meadows and pastures'].mean()*1000)
+Pastures = int((df_selection['Permanent meadows and pastures'].mean()*1000)
 Total_export = int(df_selection['Export Quantity'].sum()*1000)
 Total_Production = int(df_selection['Production'].sum()*1000)
 Total_SupplyQuantity = int(df_selection['Supply Quantity'].sum()*1000)
