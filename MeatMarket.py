@@ -53,7 +53,7 @@ with left_column:
     
     st.header(f'{Country}')
     st.subheader(f'Average Population: {Population:,} inh')
-    st.subheader(f'Average Land Area: {Country_area:,}Ha')
+    st.subheader(f'Average Land Area: {Land:,}Ha')
                        
 with middle_column:
     st.subheader(f'Total Production: {Total_Production:,}t') 
