@@ -139,19 +139,28 @@ yearly_data = df_selection.groupby(['Year', 'Item']).agg({
     'Domestic supply quantity': 'sum'
 }).reset_index()
 
+
 yearly_data['Production'] *= 1000
 yearly_data['Export Quantity'] *= 1000
 yearly_data['Domestic supply quantity'] *= 1000
+
+
+# Sorting by Year
 yearly_data.sort_values('Year', inplace=True)
-                       
+
+# Transform the DataFrame for plotting
+melted_yearly_data = yearly_data.melt(id_vars=['Year', 'Item'], value_vars=['Production', 'Export Quantity', 'Domestic supply quantity'])
+
+# Create line plot
 fig = px.line(
-    yearly_data,
+    melted_yearly_data,
     x='Year',
-    y=['Production', 'Export Quantity', 'Domestic supply quantity'],  # Plotting both metrics
+    y='value',
+    color='Item',
+    line_dash='variable',
     labels={'value': 'Quantity', 'variable': 'Metric'},
     title='Annual Sum of Production, Export Quantities, and Domestic Supply Quantity'
 )
-
 
 # Updating layout
 fig.update_layout(
@@ -162,7 +171,6 @@ fig.update_layout(
 )
 
 # Plotting
-st.plotly_chart(fig, use_container_width=True)                
-                       
+st.plotly_chart(fig, use_container_width=True)
 
 
