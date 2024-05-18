@@ -35,11 +35,15 @@ df_selection = df.query('Year >= @year_range[0] and Year <= @year_range[1]  and 
 #Main page
 st.title('European Meat Market ')
 Country = df_selection['Area'].iloc[0]
-Population = int(df_selection['Population'].mean())*1000 # original unit is *1000 inhabitants 
+Population = int(df_selection['Population'].mean())*1000 # original unit is *1000 inhabitants
 Land = int((df_selection['Land area'].mean()*1000)) # same as land area multiplied by 1000 hectars
+Pastures = int(int(df_selection['Permanent meadows and pastures'].mean()*1000)
 Total_export = int(df_selection['Export Quantity'].sum()*1000)
 Total_Production = int(df_selection['Production'].sum()*1000)
-                       
+Total_SupplyQuantity = int(df_selection['Supply Quantity'].sum()*1000)
+GDP = int(int(df_selection['GDP in Million USD'].mean())
+          
+#Splitting the header into 3 columns
 left_column, middle_column, right_column = st.columns(3)
 with left_column:
     
@@ -51,12 +55,18 @@ with middle_column:
     st.header("Market")
     st.subheader(f'Total Production: {Total_Production:,} t') 
     st.subheader(f'Total Export Quantity: {Total_export:,} t')
+    st.subheader(f'Total Supply Quantity: {Total_SupplyQuantity:,} t')
+    
+with right_column:
+    st.subheader(f'GDP: {GDP:,} in Million USD') 
+    st.subheader(f'Total Export Quantity: {Total_export:,} t')
+    st.subheader(f'Total Export Quantity: {Total_SupplyQuantity:,} t'
     
 # Placing a markdown   
 st.markdown("""---""")
 
 #creating 2 columns                       
-col1, col2 = st.columns(2)   
+col1, col2, col3 = st.columns(3)   
 
 # Grouping by item and the sum of production 
 production_by_item = df_selection.groupby('Item')['Production'].sum().sort_values(ascending=False)*1000 #converting the unit 
@@ -76,16 +86,36 @@ with col1:
 
     Prod_.update_layout(
         plot_bgcolor="rgba(0,0,0,0)",
-        xaxis=dict(showgrid=False, title='Total Production in Tonnes' )
+        xaxis=dict(showgrid=False, title='Total Production in t' )
     )
 # plotting
     st.plotly_chart(Prod_)
                        
-#Export in the second column                   
-                       
+#Supply Quantity in the second column
+supplyquantity_by_item = df_selection.groupby('Item')['Domestic supply quantity'].sum().sort_values(ascending=False)*1000 #converting the unit   
+                 
+with col2: 
+    Prod_ = px.bar(
+        production_by_item,
+        x=supplyquantity_by_item.values,
+        y=supplyquantity_by_item.index,
+        orientation='h',
+        title="<b>Supply Quantity by Item</b>",
+        color_discrete_sequence=["#0083B8"],  
+        template="plotly_white"
+    )
+
+    Prod_.update_layout(
+        plot_bgcolor="rgba(0,0,0,0)",
+        xaxis=dict(showgrid=False, title='Total Domestic Supply Quantity in t' )
+    )
+# plotting
+    st.plotly_chart(Prod_)     
+                 
+#Export Quantity in the second column                       
 export_by_item = df_selection.groupby('Item')['Export Quantity'].sum().sort_values(ascending=False)*1000
 
-with col2:                       
+with col3:                       
     exp_ = px.bar(
         export_by_item,
         x=export_by_item.values,
@@ -108,22 +138,22 @@ with col2:
 st.markdown("""---""")
 
 #line plot by the years selected
-yearly_data = df_selection.groupby('Year').agg({
+yearly_data = df_selection.groupby(['Year', 'Item']).agg({
     'Production': 'sum',
-    'Export Quantity':'sum'
+    'Export Quantity': 'sum'
 }).reset_index()
 
 yearly_data['Production'] *= 1000
 yearly_data['Export Quantity'] *= 1000
-
+yearly_data['Domestic supply quantity'] *= 1000
 yearly_data.sort_values('Year', inplace=True)
                        
 fig = px.line(
     yearly_data,
     x='Year',
-    y=['Production', 'Export Quantity'],  # Plotting both metrics
+    y=['Production', 'Export Quantity', 'Domestic supply quantity'],  # Plotting both metrics
     labels={'value': 'Quantity', 'variable': 'Metric'},
-    title='Annual Sum of Production and Export Quantities'
+    title='Annual Sum of Production, Export Quantities, and Domestic Supply Quantity'
 )
 
 
