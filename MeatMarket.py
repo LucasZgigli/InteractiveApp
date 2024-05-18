@@ -152,6 +152,8 @@ yearly_data.sort_values('Year', inplace=True)
 # Create initial traces for Production
 fig = go.Figure()
 
+
+# Production
 for item in yearly_data['Item'].unique():
     item_data = yearly_data[yearly_data['Item'] == item]
     fig.add_trace(go.Scatter(
@@ -159,6 +161,28 @@ for item in yearly_data['Item'].unique():
         y=item_data['Production'],
         mode='lines',
         name=f'{item} - Production'
+    ))
+
+# Export Quantity
+for item in yearly_data['Item'].unique():
+    item_data = yearly_data[yearly_data['Item'] == item]
+    fig.add_trace(go.Scatter(
+        x=item_data['Year'],
+        y=item_data['Export Quantity'],
+        mode='lines',
+        name=f'{item} - Export Quantity',
+        visible=False 
+    ))
+
+# Domestic supply quantity
+for item in yearly_data['Item'].unique():
+    item_data = yearly_data[yearly_data['Item'] == item]
+    fig.add_trace(go.Scatter(
+        x=item_data['Year'],
+        y=item_data['Domestic supply quantity'],
+        mode='lines',
+        name=f'{item} - Domestic supply quantity',
+        visible=False  
     ))
 
 # Update layout
@@ -173,45 +197,32 @@ fig.update_layout(
             {
                 'method': 'update',
                 'label': 'Production',
-                'args': [{'visible': [True if 'Production' in trace.name else False for trace in fig.data]},
-                         {'title': 'Production Quantities by Meat Type'}]
+                'args': [
+                    {'visible': [i < len(yearly_data['Item'].unique()) for i in range(len(fig.data))]},
+                    {'title': 'Production Quantities by Meat Type'}
+                ]
             },
             {
                 'method': 'update',
                 'label': 'Export Quantity',
-                'args': [{'visible': [True if 'Export Quantity' in trace.name else False for trace in fig.data]},
-                         {'title': 'Export Quantities by Meat Type'}]
+                'args': [
+                    {'visible': [len(yearly_data['Item'].unique()) <= i < 2 * len(yearly_data['Item'].unique()) for i in range(len(fig.data))]},
+                    {'title': 'Export Quantities by Meat Type'}
+                ]
             },
             {
                 'method': 'update',
                 'label': 'Domestic supply quantity',
-                'args': [{'visible': [True if 'Domestic supply quantity' in trace.name else False for trace in fig.data]},
-                         {'title': 'Domestic Supply Quantities by Meat Type'}]
-            },
+                'args': [
+                    {'visible': [2 * len(yearly_data['Item'].unique()) <= i < 3 * len(yearly_data['Item'].unique()) for i in range(len(fig.data))]},
+                    {'title': 'Domestic Supply Quantities by Meat Type'}
+                ]
+            }
         ],
         'direction': 'down',
         'showactive': True,
     }]
 )
 
-# Adding additional traces for Export Quantity and Domestic supply quantity
-for item in yearly_data['Item'].unique():
-    item_data = yearly_data[yearly_data['Item'] == item]
-    fig.add_trace(go.Scatter(
-        x=item_data['Year'],
-        y=item_data['Export Quantity'],
-        mode='lines',
-        name=f'{item} - Export Quantity',
-        visible=False  # Initially hidden
-    ))
-    fig.add_trace(go.Scatter(
-        x=item_data['Year'],
-        y=item_data['Domestic supply quantity'],
-        mode='lines',
-        name=f'{item} - Domestic supply quantity',
-        visible=False  # Initially hidden
-    ))
-
 # Plotting
 st.plotly_chart(fig, use_container_width=True)
-
