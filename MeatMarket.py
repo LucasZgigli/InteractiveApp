@@ -238,7 +238,7 @@ st.plotly_chart(fig, use_container_width=True)
 # Define paths using raw string literals to avoid escape sequence issues
 base_path = r'C:\Users\lucas\OneDrive\Área de Trabalho\CCT\Github\InteractiveApp'
 
-model_path = os.path.join(base_path, 'meat_market_model.h5')
+model_path = os.path.join(base_path, 'NNmodel.h5')
 scaler_path = os.path.join(base_path, 'scaler.pkl')
 item_encoder_path = os.path.join(base_path, 'Item_encoder.pkl')
 area_encoder_path = os.path.join(base_path, 'Area_encoder.pkl')
