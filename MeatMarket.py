@@ -6,6 +6,9 @@ import os
 import numpy as np
 import warnings 
 warnings.simplefilter('ignore')
+from keras.models import load_model
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+import pickle
 ##Interactive visuals
 import plotly.express as px
 import streamlit as st
@@ -231,12 +234,70 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True)
 
 
+# Load the trained model
+model_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'meat_market_model.h5')
+model = load_model(model_path)
+
+# Load the scaler
+scaler_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'scaler.pkl')
+with open(scaler_path, 'rb') as f:
+    scaler = pickle.load(f)
+
+# Load the label encoders
+item_encoder_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'Item_encoder.pkl')
+with open(item_encoder_path, 'rb') as f:
+    item_encoder = pickle.load(f)
+
+area_encoder_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'Area_encoder.pkl')
+with open(area_encoder_path, 'rb') as f:
+    area_encoder = pickle.load(f)
+
+st.title("Meat Market Prediction")
 st.markdown("""---""")
 st.header("Predict Future Values")
+item_input = st.selectbox('Item', options=item_encoder.classes_)
+area_input = st.selectbox('Area', options=area_encoder.classes_)
 population_input = st.number_input('Population (in thousands)', min_value=0)
 land_input = st.number_input('Land Area (in hectares)', min_value=0)
 pastures_input = st.number_input('Permanent Meadows and Pastures (in hectares)', min_value=0)
 export_input = st.number_input('Export Quantity (in tonnes)', min_value=0)
 production_input = st.number_input('Production (in tonnes)', min_value=0)
 supply_input = st.number_input('Domestic Supply Quantity (in tonnes)', min_value=0)
-gdp_input = st.number_input
+gdp_input = st.number_input('GDP (in Million USD)', min_value=0)
+
+def preprocess_inputs(inputs):
+    # Extract numerical inputs
+    num_inputs = inputs[2:]
+    
+    # Scale numerical inputs
+    scaled_num_inputs = scaler.transform([num_inputs])
+    
+    # Combine categorical and scaled numerical inputs
+    preprocessed_inputs = [inputs[0]] + [inputs[1]] + scaled_num_inputs[0].tolist()
+    return preprocessed_inputs
+
+
+if st.button('Predict'):
+    item_encoded = item_encoder.transform([item_input])[0]
+    area_encoded = area_encoder.transform([area_input])[0]
+    inputs = [item_encoded, area_encoded, population_input, land_input, pastures_input, export_input, production_input, supply_input, gdp_input]
+    processed_inputs = preprocess_inputs(inputs)
+    prediction = model.predict([processed_inputs])
+    st.subheader(f'Predicted Value: {prediction[0][0]:.2f}')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
