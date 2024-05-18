@@ -1,6 +1,11 @@
-streamlit
+
 matplotlib
 plotly
 pandas
 numpy
 seaborn
+keras
+tensorflow
+streamlit
+scikit-learn
+pandas

@@ -232,55 +232,29 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True)
 
 
-model_path = 'C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\meat_market_model.h5'
-scaler_path = 'C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\scaler.pkl'
-item_encoder_path = 'C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\Item_encoder.pkl'
-area_encoder_path = 'C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\Area_encoder.pkl'
-
 # Load the trained model
-try:
-    model = load_model(model_path)
-    print("Model loaded successfully")
-except Exception as e:
-    print(f"Error loading model: {e}")
+model_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'meat_market_model.h5')
+model = load_model(model_path)
 
 # Load the scaler
-try:
-    with open(scaler_path, 'rb') as f:
-        scaler = pickle.load(f)
-    print("Scaler loaded successfully")
-except Exception as e:
-    print(f"Error loading scaler: {e}")
+scaler_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'scaler.pkl')
+with open(scaler_path, 'rb') as f:
+    scaler = pickle.load(f)
 
 # Load the label encoders
-try:
-    with open(item_encoder_path, 'rb') as f:
-        item_encoder = pickle.load(f)
-    print("Item encoder loaded successfully")
-except Exception as e:
-    print(f"Error loading item encoder: {e}")
+item_encoder_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'Item_encoder.pkl')
+with open(item_encoder_path, 'rb') as f:
+    item_encoder = pickle.load(f)
 
-try:
-    with open(area_encoder_path, 'rb') as f:
-        area_encoder = pickle.load(f)
-    print("Area encoder loaded successfully")
-except Exception as e:
-    print(f"Error loading area encoder: {e}")
-
-
+area_encoder_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'Area_encoder.pkl')
+with open(area_encoder_path, 'rb') as f:
+    area_encoder = pickle.load(f)
 
 st.title("Meat Market Prediction")
 st.markdown("""---""")
 st.header("Predict Future Values")
-if 'item_encoder' in locals() and hasattr(item_encoder, 'classes_'):
-    item_input = st.selectbox('Item', options=item_encoder.classes_)
-else:
-    item_input = st.selectbox('Item', options=[])
-
-if 'area_encoder' in locals() and hasattr(area_encoder, 'classes_'):
-    area_input = st.selectbox('Area', options=area_encoder.classes_)
-else:
-    area_input = st.selectbox('Area', options=[])
+item_input = st.selectbox('Item', options=item_encoder.classes_)
+area_input = st.selectbox('Area', options=area_encoder.classes_)
 population_input = st.number_input('Population (in thousands)', min_value=0)
 land_input = st.number_input('Land Area (in hectares)', min_value=0)
 pastures_input = st.number_input('Permanent Meadows and Pastures (in hectares)', min_value=0)
