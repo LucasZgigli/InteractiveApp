@@ -148,22 +148,42 @@ yearly_data['Domestic supply quantity'] *= 1000
 # Sorting by Year
 yearly_data.sort_values('Year', inplace=True)
 
-# Transform the DataFrame for plotting
-melted_yearly_data = yearly_data.melt(id_vars=['Year', 'Item'], value_vars=['Production', 'Export Quantity', 'Domestic supply quantity'])
+# Create the figure
+fig = go.Figure()
 
-# Create line plot
-fig = px.line(
-    melted_yearly_data,
-    x='Year',
-    y='value',
-    color='Item',
-    line_dash='variable',
-    labels={'value': 'Quantity', 'variable': 'Metric'},
-    title='Annual Sum of Production, Export Quantities, and Domestic Supply Quantity'
-)
+# Add traces for Production
+for item in yearly_data['Item'].unique():
+    item_data = yearly_data[yearly_data['Item'] == item]
+    fig.add_trace(go.Scatter(
+        x=item_data['Year'], 
+        y=item_data['Production'], 
+        mode='lines', 
+        name=f'{item} - Production'
+    ))
 
-# Updating layout
+# Add traces for Export Quantity
+for item in yearly_data['Item'].unique():
+    item_data = yearly_data[yearly_data['Item'] == item]
+    fig.add_trace(go.Scatter(
+        x=item_data['Year'], 
+        y=item_data['Export Quantity'], 
+        mode='lines', 
+        name=f'{item} - Export Quantity'
+    ))
+
+# Add traces for Domestic supply quantity
+for item in yearly_data['Item'].unique():
+    item_data = yearly_data[yearly_data['Item'] == item]
+    fig.add_trace(go.Scatter(
+        x=item_data['Year'], 
+        y=item_data['Domestic supply quantity'], 
+        mode='lines', 
+        name=f'{item} - Domestic supply quantity'
+    ))
+
+# Update layout
 fig.update_layout(
+    title='Annual Sum of Production, Export Quantities, and Domestic Supply Quantity by Meat Type',
     xaxis_title='Year',
     yaxis_title='Total Quantity',
     legend_title='Metrics',
