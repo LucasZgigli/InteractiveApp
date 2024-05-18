@@ -4,3 +4,4 @@ plotly
 pandas
 numpy
 seaborn
+import plotly.graph_objects as go
