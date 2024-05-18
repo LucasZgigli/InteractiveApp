@@ -11,7 +11,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from scikeras.wrappers import KerasRegressor
 from tensorflow.keras.callbacks import EarlyStopping
-from keras import backend as k
+from tensorflow.keras.models import load_model
 import warnings 
 warnings.simplefilter('ignore')
 import pickle
