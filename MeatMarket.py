@@ -9,6 +9,7 @@ warnings.simplefilter('ignore')
 ##Interactive visuals
 import plotly.express as px
 import streamlit as st
+import plotly.graph_objects as go
 #pip install -r requirements.txt
 # Load data
 df = pd.read_csv('Meat_market.csv')
