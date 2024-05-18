@@ -135,7 +135,7 @@ st.markdown("""---""")
 #line plot by the years selected
 yearly_data = df_selection.groupby(['Year', 'Item']).agg({
     'Production': 'sum',
-    'Export Quantity': 'sum'
+    'Export Quantity': 'sum',
     'Domestic supply quantity': 'sum'
 }).reset_index()
 
