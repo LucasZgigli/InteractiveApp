@@ -230,29 +230,44 @@ fig.update_layout(
 
 # Plotting
 st.plotly_chart(fig, use_container_width=True)
+
+
+model_path = 'C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\meat_market_model.h5'
+scaler_path = 'C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\scaler.pkl'
+item_encoder_path = 'C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\Item_encoder.pkl'
+area_encoder_path = 'C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\Area_encoder.pkl'
+
+# Load the trained model
 try:
     model = load_model(model_path)
     print("Model loaded successfully")
 except Exception as e:
     print(f"Error loading model: {e}")
 
-# Load the trained model
-model_path = 'C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\meat_market_model.h5'
-
-
 # Load the scaler
-scaler_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'scaler.pkl')
-with open(scaler_path, 'rb') as f:
-    scaler = pickle.load(f)
+try:
+    with open(scaler_path, 'rb') as f:
+        scaler = pickle.load(f)
+    print("Scaler loaded successfully")
+except Exception as e:
+    print(f"Error loading scaler: {e}")
 
 # Load the label encoders
-item_encoder_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'Item_encoder.pkl')
-with open(item_encoder_path, 'rb') as f:
-    item_encoder = pickle.load(f)
+try:
+    with open(item_encoder_path, 'rb') as f:
+        item_encoder = pickle.load(f)
+    print("Item encoder loaded successfully")
+except Exception as e:
+    print(f"Error loading item encoder: {e}")
 
-area_encoder_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'Area_encoder.pkl')
-with open(area_encoder_path, 'rb') as f:
-    area_encoder = pickle.load(f)
+try:
+    with open(area_encoder_path, 'rb') as f:
+        area_encoder = pickle.load(f)
+    print("Area encoder loaded successfully")
+except Exception as e:
+    print(f"Error loading area encoder: {e}")
+
+
 
 st.title("Meat Market Prediction")
 st.markdown("""---""")
