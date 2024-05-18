@@ -234,29 +234,83 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True)
 
 
-# Load the trained model
+# Define paths
 model_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'meat_market_model.h5')
-model = load_model(model_path)
+scaler_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'scaler.pkl')
+item_encoder_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'Item_encoder.pkl')
+area_encoder_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'Area_encoder.pkl')
+
+# Function to check if file exists and is readable
+def check_file(path):
+    if os.path.exists(path):
+        if os.access(path, os.R_OK):
+            return True
+        else:
+            st.error(f"File is not readable: {path}")
+            print(f"File is not readable: {path}")
+            return False
+    else:
+        st.error(f"File does not exist: {path}")
+        print(f"File does not exist: {path}")
+        return False
+
+# Load the trained model
+if check_file(model_path):
+    try:
+        model = load_model(model_path)
+        st.success("Model loaded successfully")
+        print("Model loaded successfully")
+    except Exception as e:
+        st.error(f"Error loading model: {e}")
+        print(f"Error loading model: {e}")
 
 # Load the scaler
-scaler_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'scaler.pkl')
-with open(scaler_path, 'rb') as f:
-    scaler = pickle.load(f)
+if check_file(scaler_path):
+    try:
+        with open(scaler_path, 'rb') as f:
+            scaler = pickle.load(f)
+        st.success("Scaler loaded successfully")
+        print("Scaler loaded successfully")
+    except Exception as e:
+        st.error(f"Error loading scaler: {e}")
+        print(f"Error loading scaler: {e}")
+        
+# Load the item encoder
+if check_file(item_encoder_path):
+    try:
+        with open(item_encoder_path, 'rb') as f:
+            item_encoder = pickle.load(f)
+        st.success("Item encoder loaded successfully")
+        print("Item encoder loaded successfully")
+    except Exception as e:
+        st.error(f"Error loading item encoder: {e}")
+        print(f"Error loading item encoder: {e}")
 
-# Load the label encoders
-item_encoder_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'Item_encoder.pkl')
-with open(item_encoder_path, 'rb') as f:
-    item_encoder = pickle.load(f)
-
-area_encoder_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'Area_encoder.pkl')
-with open(area_encoder_path, 'rb') as f:
-    area_encoder = pickle.load(f)
-
+# Load the area encoder
+if check_file(area_encoder_path):
+    try:
+        with open(area_encoder_path, 'rb') as f:
+            area_encoder = pickle.load(f)
+        st.success("Area encoder loaded successfully")
+        print("Area encoder loaded successfully")
+    except Exception as e:
+        st.error(f"Error loading area encoder: {e}")
+        print(f"Error loading area encoder: {e}")
+        
 st.title("Meat Market Prediction")
 st.markdown("""---""")
 st.header("Predict Future Values")
-item_input = st.selectbox('Item', options=item_encoder.classes_)
-area_input = st.selectbox('Area', options=area_encoder.classes_)
+# Create input fields for user to enter prediction data
+if 'item_encoder' in locals() and hasattr(item_encoder, 'classes_'):
+    item_input = st.selectbox('Item', options=item_encoder.classes_)
+else:
+    item_input = st.selectbox('Item', options=[])
+
+if 'area_encoder' in locals() and hasattr(area_encoder, 'classes_'):
+    area_input = st.selectbox('Area', options=area_encoder.classes_)
+else:
+    area_input = st.selectbox('Area', options=[])
+
 population_input = st.number_input('Population (in thousands)', min_value=0)
 land_input = st.number_input('Land Area (in hectares)', min_value=0)
 pastures_input = st.number_input('Permanent Meadows and Pastures (in hectares)', min_value=0)
