@@ -52,15 +52,10 @@ with left_column:
     st.subheader(f'Average Land Area: {Land:,} Ha')
                        
 with middle_column:
-    st.header("Market")
     st.subheader(f'Total Production: {Total_Production:,} t') 
     st.subheader(f'Total Export Quantity: {Total_export:,} t')
     st.subheader(f'Total Supply Quantity: {Total_SupplyQuantity:,} t')
-    
-with right_column:
     st.subheader(f'GDP: {GDP:,} in Million USD') 
-    st.subheader(f'Total Export Quantity: {Total_export:,} t')
-    st.subheader(f'Total Export Quantity: {Total_SupplyQuantity:,} t')
     
 # Placing a markdown   
 st.markdown("""---""")
@@ -141,6 +136,7 @@ st.markdown("""---""")
 yearly_data = df_selection.groupby(['Year', 'Item']).agg({
     'Production': 'sum',
     'Export Quantity': 'sum'
+    'Domestic supply quantity': 'sum'
 }).reset_index()
 
 yearly_data['Production'] *= 1000
@@ -157,15 +153,16 @@ fig = px.line(
 )
 
 
+# Updating layout
 fig.update_layout(
     xaxis_title='Year',
     yaxis_title='Total Quantity',
     legend_title='Metrics',
-    plot_bgcolor='rgba(0,0,0,0)' 
+    plot_bgcolor='rgba(0,0,0,0)'
 )
 
-#plotting
-st.plotly_chart(fig, use_container_width=True)                   
+# Plotting
+st.plotly_chart(fig, use_container_width=True)                
                        
 
 
