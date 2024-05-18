@@ -230,11 +230,15 @@ fig.update_layout(
 
 # Plotting
 st.plotly_chart(fig, use_container_width=True)
-
+try:
+    model = load_model(model_path)
+    print("Model loaded successfully")
+except Exception as e:
+    print(f"Error loading model: {e}")
 
 # Load the trained model
-model_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'meat_market_model.h5')
-model = load_model(model_path)
+model_path = 'C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\meat_market_model.h5'
+
 
 # Load the scaler
 scaler_path = os.path.join('C:\\Users\\lucas\\OneDrive\\Área de Trabalho\\CCT\\Github\\InteractiveApp\\', 'scaler.pkl')
