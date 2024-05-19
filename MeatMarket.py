@@ -364,8 +364,8 @@ time_input = st.slider(
 # Make predictions based on user inputs
 if st.button('Predict'):
     if nn_model and scaler and item_encoder and area_encoder:
-        item_encoded = item_encoder.transform([item_input])[0]
-        area_encoded = area_encoder.transform([area_input])[0]
+        item_encoded = int(item_encoder.transform([item_input])[0])
+        area_encoded = int(area_encoder.transform([area_input])[0])
         # Combine all the inputs into a list
         inputs = [population_input, land_input, pastures_input, gdp_input, production_input, supply_input, time_input, area_encoded, item_encoded]
         
