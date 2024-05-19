@@ -310,14 +310,15 @@ if area_encoder and hasattr(area_encoder, 'classes_'):
 else:
     area_input = st.selectbox('Area', options=[])
 
-population_input = Population
-land_input = Land
-pastures_input = Pastures
-gdp_input = GDP
+
 # Extract the last measured values for each item and country
 last_measured_production = df_selection_sorted['Production'].iloc[0] * 1000  # converting the unit
 last_measured_supply = df_selection_sorted['Domestic supply quantity'].iloc[0] * 1000  # converting the unit
 
+# Pre-filling the input fields with the values displayed in the columns
+population_input = Population
+land_input = Land
+pastures_input = Pastures
 production_input = st.slider(
     'Production (in tonnes)', 
     min_value=0, 
@@ -330,8 +331,16 @@ supply_input = st.slider(
     max_value=int(0.2 * last_measured_supply),
     value=0
 )
+gdp_input = GDP
 
 # Function to preprocess inputs similar to training data
+def preprocess_inputs(inputs):
+    num_inputs = inputs[2:]  # Extract numerical inputs
+    scaled_num_inputs = scaler.transform([num_inputs])  # Scale numerical inputs
+    preprocessed_inputs = [inputs[0]] + [inputs[1]] + scaled_num_inputs[0].tolist()  # Combine inputs
+    return preprocessed_inputs
+
+# Make predictions based on user inputs
 if st.button('Predict'):
     if nn_model and scaler and item_encoder and area_encoder:
         item_encoded = item_encoder.transform([item_input])[0]
