@@ -109,7 +109,7 @@ with col1:
 
     Prod_.update_layout(
         plot_bgcolor="rgba(0,0,0,0)",
-        xaxis=dict(showgrid=False, title='Total Production in t')
+        xaxis=dict(showgrid=False, title='Production over the years in t')
     )
     st.plotly_chart(Prod_)
 
@@ -129,7 +129,7 @@ with col2:
 
     Supply_.update_layout(
         plot_bgcolor="rgba(0,0,0,0)",
-        xaxis=dict(showgrid=False, title='Total Domestic Supply Quantity in t')
+        xaxis=dict(showgrid=False, title='Domestic Supply Quantity over the years in t')
     )
     st.plotly_chart(Supply_)
 
@@ -142,7 +142,7 @@ with col3:
         x=export_by_item.values,
         y=export_by_item.index,
         orientation='h',
-        labels={'x': 'Total Quantity Exported in Tonnes', 'index': 'Item'},
+        labels={'x': 'Quantity exported over the years in t', 'index': 'Item'},
         title="<b>Export by Item</b>",
         color_discrete_sequence=["#0083B8"],
         template="plotly_white"
