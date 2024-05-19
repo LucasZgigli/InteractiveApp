@@ -323,13 +323,32 @@ def get_max_values(selected_area, selected_item):
     max_supply = df_filtered['Domestic supply quantity'].max() * 1000  # converting the unit
     return max_production, max_supply
 
-# Recompute max values based on selected area and item
-if st.button('Update Max Values'):
-    max_production, max_supply = get_max_values(area_input, item_input)
-else:
-    max_production = 0
-    max_supply = 0
 
+max_production, max_supply = get_max_values(area_input, item_input)
+
+
+# Recompute max values based on selected area and item
+if max_production > 0:
+    production_input = st.slider(
+        'Production (in tonnes)',
+        min_value=0,
+        max_value=int(1.2 * max_production),  # Allow up to 20% more
+        value=0
+    )
+else:
+    st.warning("No production data available for the selected area and item.")
+    production_input = 0
+
+if max_supply > 0:
+    supply_input = st.slider(
+        'Domestic Supply Quantity (in tonnes)',
+        min_value=0,
+        max_value=int(1.2 * max_supply),  # Allow up to 20% more
+        value=0
+    )
+else:
+    st.warning("No supply data available for the selected area and item.")
+    supply_input = 0
 # Update sliders with new max values
 production_input = st.slider(
     'Production (in tonnes)',
