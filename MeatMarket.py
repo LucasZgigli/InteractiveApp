@@ -72,13 +72,13 @@ with left_column:
     st.subheader(f'Average Land Area: {Land:,}Ha')
                        
 with middle_column:
-    st.header(f'{}')
+    st.header(f'{  }')
     st.subheader(f'Total Production: {Total_Production:,}t') 
     st.subheader(f'Total Export Quantity: {Total_export:,}t')
 
     
 with right_column:
-    st.header(f'{}')
+    st.header(f'{  }')
     st.subheader(f'Total Supply Quantity: {Total_SupplyQuantity:,}t')
     st.subheader(f'GDP: {GDP:,} in Million USD') 
     
