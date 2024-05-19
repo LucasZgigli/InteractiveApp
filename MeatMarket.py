@@ -109,7 +109,7 @@ with col1:
 
     Prod_.update_layout(
         plot_bgcolor="rgba(0,0,0,0)",
-        xaxis=dict(showgrid=False, title='Production over the years in t')
+        xaxis=dict(showgrid=False, title='Total Production in t')
     )
     st.plotly_chart(Prod_)
 
@@ -129,7 +129,7 @@ with col2:
 
     Supply_.update_layout(
         plot_bgcolor="rgba(0,0,0,0)",
-        xaxis=dict(showgrid=False, title='Domestic Supply Quantity over the years in t')
+        xaxis=dict(showgrid=False, title='Total Domestic Supply Quantity in t')
     )
     st.plotly_chart(Supply_)
 
@@ -142,7 +142,7 @@ with col3:
         x=export_by_item.values,
         y=export_by_item.index,
         orientation='h',
-        labels={'x': 'Quantity exported over the years in t', 'index': 'Item'},
+        labels={'x': 'Total Quantity Exported in Tonnes', 'index': 'Item'},
         title="<b>Export by Item</b>",
         color_discrete_sequence=["#0083B8"],
         template="plotly_white"
@@ -186,7 +186,7 @@ for item in yearly_data['Item'].unique():
 
 # Update layout
 fig.update_layout(
-    title=f'Annual Sum of {metric} by Meat Type',
+    title=f' {metric} by Meat Type over the years',
     xaxis_title='Year',
     yaxis_title='Total Quantity',
     legend_title='Metrics',
