@@ -76,7 +76,7 @@ with middle_column:
     st.subheader(f'Total Export Quantity: {Total_export:,}t')
 
     
-with middle_column:
+with right_column:
     st.subheader(f'Total Supply Quantity: {Total_SupplyQuantity:,}t')
     st.subheader(f'GDP: {GDP:,} in Million USD') 
     
