@@ -369,20 +369,11 @@ if st.button('Predict'):
         # Combine all the inputs into a list
         inputs = [population_input, land_input, pastures_input, gdp_input, production_input, supply_input, time_input, area_encoded, item_encoded]
         
-        # Print inputs to check correctness
-        st.write("Inputs before scaling:", inputs)
-        
         # Normalize the inputs
         processed_inputs = preprocess_inputs(inputs)
         
-        # Print processed inputs to check correctness
-        st.write("Inputs after scaling:", processed_inputs)
-        
         processed_inputs = np.array([processed_inputs])  # Ensure the input is a 2D array
         prediction = nn_model.predict(processed_inputs)
-        
-        # Print prediction to check correctness
-        st.write("Processed inputs for prediction:", processed_inputs)
         
         st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f} tonnes')
     else:
