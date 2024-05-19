@@ -361,8 +361,9 @@ if st.button('Predict'):
         # Combine all the inputs into a list
         inputs = [population_input, land_input, pastures_input, gdp_input, production_input, supply_input, time_input, area_encoded, item_encoded]
         processed_inputs = preprocess_inputs(inputs)
+        processed_inputs = np.array([processed_inputs])  # Ensure the input is a 2D array
         print(f"Processed inputs for prediction: {processed_inputs}")  # Debug print
-        prediction = nn_model.predict([processed_inputs])
+        prediction = nn_model.predict(processed_inputs)
         st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f} tonnes')
     else:
         st.error("Required components are not fully loaded.")
