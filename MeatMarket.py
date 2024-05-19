@@ -248,7 +248,7 @@ st.plotly_chart(fig, use_container_width=True)
 # Define paths using raw string literals to avoid escape sequence issues
 # Define paths using raw string literals
 base_path = r'C:\Users\lucas\OneDrive\Área de Trabalho\CCT\Github\InteractiveApp'
-model_path = os.path.join(base_path, 'NNmodel.keras')
+model_path = os.path.join(base_path, 'ANNmodel.keras')
 scaler_path = os.path.join(base_path, 'scaler.pkl')
 item_encoder_path = os.path.join(base_path, 'Item_encoder.pkl')
 area_encoder_path = os.path.join(base_path, 'Area_encoder.pkl')
