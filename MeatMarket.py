@@ -320,13 +320,13 @@ df_filtered = df[(df['Area'] == area_input) & (df['Item'] == item_input)].sort_v
 
 if not df_filtered.empty:
     latest_record = df_filtered.iloc[0]
-    last_production = latest_record['Production'] * 1000
-    last_supply = latest_record['Domestic supply quantity'] * 1000
+    last_production = latest_record['Production']
+    last_supply = latest_record['Domestic supply quantity']
     last_time = latest_record['Time']
-    population_input = int(latest_record['Population']) * 1000  # original unit is *1000 inhabitants
-    land_input = int(latest_record['Country area']) * 1000  # same as land area multiplied by 1000 hectares
-    pastures_input = int(latest_record['Permanent meadows and pastures']) * 1000
-    gdp_input = int(latest_record['GDP per capita in USD'])
+    population_input = latest_record['Population']  # original unit
+    land_input = latest_record['Country area']  # original unit
+    pastures_input = latest_record['Permanent meadows and pastures']  # original unit
+    gdp_input = latest_record['GDP per capita in USD']  # original unit
 else:
     st.error("No data available for the selected area and item.")
     last_production = last_supply = last_time = population_input = land_input = pastures_input = gdp_input = 0
