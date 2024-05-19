@@ -310,13 +310,26 @@ if area_encoder and hasattr(area_encoder, 'classes_'):
 else:
     area_input = st.selectbox('Area', options=[])
 
-population_input = st.number_input('Population (in thousands)', min_value=0)
-land_input = st.number_input('Land Area (in hectares)', min_value=0)
-pastures_input = st.number_input('Permanent Meadows and Pastures (in hectares)', min_value=0)
-export_input = st.number_input('Export Quantity (in tonnes)', min_value=0)
-production_input = st.number_input('Production (in tonnes)', min_value=0)
-supply_input = st.number_input('Domestic Supply Quantity (in tonnes)', min_value=0)
-gdp_input = st.number_input('GDP (in Million USD)', min_value=0)
+population_input = Population
+land_input = Land
+pastures_input = Pastures
+gdp_input = GDP
+# Extract the last measured values for each item and country
+last_measured_production = df_selection_sorted['Production'].iloc[0] * 1000  # converting the unit
+last_measured_supply = df_selection_sorted['Domestic supply quantity'].iloc[0] * 1000  # converting the unit
+
+production_input = st.slider(
+    'Production (in tonnes)', 
+    min_value=0, 
+    max_value=int(0.2 * last_measured_production),
+    value=0
+)
+supply_input = st.slider(
+    'Domestic Supply Quantity (in tonnes)', 
+    min_value=0, 
+    max_value=int(0.2 * last_measured_supply),
+    value=0
+)
 
 # Function to preprocess inputs similar to training data
 def preprocess_inputs(inputs):
