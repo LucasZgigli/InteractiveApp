@@ -49,15 +49,15 @@ df_selection = df.query('Year >= @year_range[0] and Year <= @year_range[1]  and 
 
 #Main page
 st.title('European Meat Market ')
+df_selection_sorted = df_selection.sort_values(by='Year', ascending=False)
 Country = df_selection['Area'].iloc[0]
-Population = int(df_selection['Population'].mean())*1000 # original unit is *1000 inhabitants
-Land = int(df_selection['Country area'].mean()*1000) # same as land area multiplied by 1000 hectars
-Pastures = int(df_selection['Permanent meadows and pastures'].mean()*1000)
+Population = int(df_selection_sorted['Population'].iloc[0])*1000 # original unit is *1000 inhabitants
+Land = int(df_selection_sorted['Country area'].iloc[0]*1000) # same as land area multiplied by 1000 hectars
+Pastures = int(df_selection_sorted['Permanent meadows and pastures'].iloc[0]*1000)
 Total_export = int(df_selection['Export Quantity'].sum()*1000)
 Total_Production = int(df_selection['Production'].sum()*1000)
 Total_SupplyQuantity = int(df_selection['Domestic supply quantity'].sum()*1000)
-#Calling the most recent GDP 
-df_selection_sorted = df_selection.sort_values(by='Year', ascending=False)
+#Calling the most recent GDP )
 most_recent_gdp_per_capita = int(df_selection_sorted['GDP per capita in USD'].iloc[0])
 GDP = most_recent_gdp_per_capita
           
