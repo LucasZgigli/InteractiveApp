@@ -248,16 +248,15 @@ st.plotly_chart(fig, use_container_width=True)
 # Define paths using raw string literals to avoid escape sequence issues
 # Define paths using raw string literals
 base_path = r'C:\Users\lucas\OneDrive\Área de Trabalho\CCT\Github\InteractiveApp'
-model_path = os.path.join(base_path, 'NNmodel.keras')
+model_path = os.path.join(base_path, 'ANNmodel.keras')
 scaler_path = os.path.join(base_path, 'scaler.pkl')
 item_encoder_path = os.path.join(base_path, 'Item_encoder.pkl')
 area_encoder_path = os.path.join(base_path, 'Area_encoder.pkl')
 
-# Function to load the model and handle potential errors
 def load_nn_model(model_path):
     try:
         model = load_model(model_path)
-        # st.success("Model loaded successfully.")  # Remove this line
+        #st.success("Model loaded successfully.")
         return model
     except UnicodeDecodeError as e:
         st.error(f"Unicode Decode Error: {e}")
@@ -274,7 +273,7 @@ def load_pickle_file(path):
     try:
         with open(path, 'rb') as f:
             obj = pickle.load(f)
-        # st.success(f"Loaded {path} successfully.")  # Remove this line
+        #st.success(f"Loaded {path} successfully.")
         return obj
     except Exception as e:
         st.error(f"Error loading {path}: {e}")
@@ -330,3 +329,4 @@ if st.button('Predict'):
         st.subheader(f'Predicted Value: {prediction[0][0]:.2f}')
     else:
         st.error("Required components are not fully loaded.")
+
