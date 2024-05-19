@@ -373,6 +373,4 @@ if st.button('Predict'):
         processed_inputs = preprocess_inputs(inputs)
         processed_inputs = np.array([processed_inputs])  # Ensure the input is a 2D array
         prediction = nn_model.predict(processed_inputs)
-        st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f} tonnes')
-    else:
-        st.error("Required components are not fully loaded.")
+        st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f}t')
