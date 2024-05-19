@@ -316,6 +316,7 @@ else:
     area_input = st.selectbox('Area', options=[])
 
 # Retrieve the latest values for the selected country and item
+# Retrieve the latest values for the selected country and item
 df_filtered = df[(df['Area'] == area_input) & (df['Item'] == item_input)].sort_values(by='Year', ascending=False)
 
 if not df_filtered.empty:
@@ -374,4 +375,5 @@ if st.button('Predict'):
         prediction = nn_model.predict(processed_inputs)
         st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f} tonnes')
     else:
+        st.error("Required components are not fully loaded.")
         st.error("Required components are not fully loaded.")
