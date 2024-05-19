@@ -316,6 +316,7 @@ if 'Year' in df_selection_sorted.columns:
     df_selection_sorted = df_selection_sorted.drop(columns=['Year'])
     
     
+# Function to recompute max values based on selected area and item
 def get_max_values(selected_area, selected_item):
     df_filtered = df.query('Area == @selected_area and Item == @selected_item')
     max_production = df_filtered['Production'].max() * 1000  # converting the unit
@@ -326,29 +327,33 @@ def get_max_values(selected_area, selected_item):
 if st.button('Update Max Values'):
     max_production, max_supply = get_max_values(area_input, item_input)
 else:
-    max_production = int(0.2 * last_measured_production)
-    max_supply = int(0.2 * last_measured_supply)
+    max_production = 0
+    max_supply = 0
 
-# Pre-filling the input fields with the values displayed in the columns
 # Update sliders with new max values
 production_input = st.slider(
     'Production (in tonnes)',
     min_value=0,
-    max_value=max_production,
+    max_value=int(0.2 * max_production),
     value=0
 )
 supply_input = st.slider(
     'Domestic Supply Quantity (in tonnes)',
     min_value=0,
-    max_value=max_supply,
+    max_value=int(0.2 * max_supply),
     value=0
 )
+
+# Pre-filling the input fields with the values displayed in the columns
+population_input = Population
+land_input = Land
+pastures_input = Pastures
 gdp_input = GDP
 
 time_input = st.slider(
-    'Time: 52 = 2022, and so on', 
-    min_value=int(last_measured_time + 1), 
-    max_value=int(last_measured_time + 5), 
+    'Time',
+    min_value=int(last_measured_time + 1),
+    max_value=int(last_measured_time + 10),
     value=int(last_measured_time + 1)
 )
 
@@ -369,6 +374,8 @@ if st.button('Predict'):
         inputs = [population_input, land_input, pastures_input, gdp_input, production_input, supply_input, time_input, area_encoded, item_encoded]
         processed_inputs = preprocess_inputs(inputs)
         processed_inputs = np.array([processed_inputs])  # Ensure the input is a 2D array
-        print(f"Processed inputs for prediction: {processed_inputs}")  
+        print(f"Processed inputs for prediction: {processed_inputs}")
         prediction = nn_model.predict(processed_inputs)
         st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f} tonnes')
+    else:
+        st.error("Required components are not fully loaded.")
