@@ -252,7 +252,6 @@ fig.update_layout(
 st.plotly_chart(fig, use_container_width=True)
 
 
-# Define paths using raw string literals to avoid escape sequence issues
 # Define paths using raw string literals
 base_path = r'C:\Users\lucas\OneDrive\Área de Trabalho\CCT\Github\InteractiveApp'
 model_path = os.path.join(base_path, 'ANNmodel.keras')
@@ -311,6 +310,11 @@ else:
     area_input = st.selectbox('Area', options=[])
 
 
+    
+# Check if 'Year' column exists and drop it
+if 'Year' in df_selection_sorted.columns:
+    df_selection_sorted = df_selection_sorted.drop(columns=['Year'])
+    
 # Extract the last measured values for each item and country
 last_measured_production = df_selection_sorted['Production'].iloc[0] * 1000  # converting the unit
 last_measured_supply = df_selection_sorted['Domestic supply quantity'].iloc[0] * 1000  # converting the unit
@@ -334,7 +338,12 @@ supply_input = st.slider(
 )
 gdp_input = GDP
 
-time_input = st.slider('Time', min_value=int(last_measured_time + 1), max_value=int(last_measured_time + 5), value=int(last_measured_time + 1))
+time_input = st.slider(
+    'Time', 
+    min_value=int(last_measured_time + 1), 
+    max_value=int(last_measured_time + 10), 
+    value=int(last_measured_time + 1)
+)
 
 # Function to preprocess inputs similar to training data
 def preprocess_inputs(inputs):
