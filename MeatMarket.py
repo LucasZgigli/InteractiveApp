@@ -245,69 +245,47 @@ st.plotly_chart(fig, use_container_width=True)
 
 
 # Define paths using raw string literals to avoid escape sequence issues
+# Define paths using raw string literals
 base_path = r'C:\Users\lucas\OneDrive\Área de Trabalho\CCT\Github\InteractiveApp'
-
-model_path = os.path.join(base_path, 'NNmodel.h5')
+model_path = os.path.join(base_path, 'NNmodel_resaved.h5')
 scaler_path = os.path.join(base_path, 'scaler.pkl')
 item_encoder_path = os.path.join(base_path, 'Item_encoder.pkl')
 area_encoder_path = os.path.join(base_path, 'Area_encoder.pkl')
 
-# Function to check if file exists and is readable
-def check_file(path):
-    if os.path.exists(path):
-        if os.access(path, os.R_OK):
-            return True
-        else:
-            st.error(f"File is not readable: {path}")
-            print(f"File is not readable: {path}")
-            return False
-    else:
-        st.error(f"File does not exist: {path}")
-        print(f"File does not exist: {path}")
-        return False
-
-# Load the trained model
-if check_file(model_path):
+# Function to load the model and handle potential errors
+def load_nn_model(model_path):
     try:
         model = load_model(model_path)
-        st.success("Model loaded successfully")
-        print("Model loaded successfully")
+        st.success("Model loaded successfully.")
+        return model
+    except UnicodeDecodeError as e:
+        st.error(f"Unicode Decode Error: {e}")
+        print(f"Unicode Decode Error: {e}")
     except Exception as e:
         st.error(f"Error loading model: {e}")
         print(f"Error loading model: {e}")
 
+# Load the model
+nn_model = load_nn_model(model_path)
+
+# Function to load a pickle file
+def load_pickle_file(path):
+    try:
+        with open(path, 'rb') as f:
+            obj = pickle.load(f)
+        st.success(f"Loaded {path} successfully.")
+        return obj
+    except Exception as e:
+        st.error(f"Error loading {path}: {e}")
+        print(f"Error loading {path}: {e}")
+        return None
+
 # Load the scaler
-if check_file(scaler_path):
-    try:
-        with open(scaler_path, 'rb') as f:
-            scaler = pickle.load(f)
-        st.success("Scaler loaded successfully")
-        print("Scaler loaded successfully")
-    except Exception as e:
-        st.error(f"Error loading scaler: {e}")
-        print(f"Error loading scaler: {e}")
+scaler = load_pickle_file(scaler_path)
 
-# Load the item encoder
-if check_file(item_encoder_path):
-    try:
-        with open(item_encoder_path, 'rb') as f:
-            item_encoder = pickle.load(f)
-        st.success("Item encoder loaded successfully")
-        print("Item encoder loaded successfully")
-    except Exception as e:
-        st.error(f"Error loading item encoder: {e}")
-        print(f"Error loading item encoder: {e}")
-
-# Load the area encoder
-if check_file(area_encoder_path):
-    try:
-        with open(area_encoder_path, 'rb') as f:
-            area_encoder = pickle.load(f)
-        st.success("Area encoder loaded successfully")
-        print("Area encoder loaded successfully")
-    except Exception as e:
-        st.error(f"Error loading area encoder: {e}")
-        print(f"Error loading area encoder: {e}")
+# Load the label encoders
+item_encoder = load_pickle_file(item_encoder_path)
+area_encoder = load_pickle_file(area_encoder_path)
 
 # Streamlit UI
 st.title("Meat Market Prediction")
@@ -315,12 +293,12 @@ st.markdown("""---""")
 st.header("Predict Future Values")
 
 # Create input fields for user to enter prediction data
-if 'item_encoder' in locals() and hasattr(item_encoder, 'classes_'):
+if item_encoder and hasattr(item_encoder, 'classes_'):
     item_input = st.selectbox('Item', options=item_encoder.classes_)
 else:
     item_input = st.selectbox('Item', options=[])
 
-if 'area_encoder' in locals() and hasattr(area_encoder, 'classes_'):
+if area_encoder and hasattr(area_encoder, 'classes_'):
     area_input = st.selectbox('Area', options=area_encoder.classes_)
 else:
     area_input = st.selectbox('Area', options=[])
@@ -342,12 +320,13 @@ def preprocess_inputs(inputs):
 
 # Make predictions based on user inputs
 if st.button('Predict'):
-    item_encoded = item_encoder.transform([item_input])[0]
-    area_encoded = area_encoder.transform([area_input])[0]
-    inputs = [item_encoded, area_encoded, population_input, land_input, pastures_input, export_input, production_input, supply_input, gdp_input]
-    processed_inputs = preprocess_inputs(inputs)
-    prediction = model.predict([processed_inputs])
-    st.subheader(f'Predicted Value: {prediction[0][0]:.2f}')
-
-
+    if nn_model and scaler and item_encoder and area_encoder:
+        item_encoded = item_encoder.transform([item_input])[0]
+        area_encoded = area_encoder.transform([area_input])[0]
+        inputs = [item_encoded, area_encoded, population_input, land_input, pastures_input, export_input, production_input, supply_input, gdp_input]
+        processed_inputs = preprocess_inputs(inputs)
+        prediction = nn_model.predict([processed_inputs])
+        st.subheader(f'Predicted Value: {prediction[0][0]:.2f}')
+    else:
+        st.error("Required components are not fully loaded.")
 
