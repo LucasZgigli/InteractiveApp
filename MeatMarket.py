@@ -254,7 +254,6 @@ st.plotly_chart(fig, use_container_width=True)
 
 # Define paths using raw string literals
 # Define relative paths
-# Define relative paths
 model_path = 'ANNmodel.h5'
 scaler_path = 'scaler.pkl'
 item_encoder_path = 'Item_encoder.pkl'
@@ -264,8 +263,11 @@ def load_nn_model(model_path):
     try:
         model = load_model(model_path)
         return model
+    except UnicodeDecodeError as e:
+        st.error(f"Unicode Decode Error: {e}")
+        st.stop()
     except FileNotFoundError:
-        st.error(f"File not found: {model_path}. Please ensure the file is an accessible .h5 file.")
+        st.error(f"File not found: {model_path}. Please ensure the file is an accessible .keras zip file.")
         st.stop()
     except Exception as e:
         st.error(f"Error loading model: {e}")
