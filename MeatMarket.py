@@ -253,23 +253,25 @@ st.plotly_chart(fig, use_container_width=True)
 
 
 # Define paths using raw string literals
-base_path = r'C:\Users\lucas\OneDrive\Área de Trabalho\CCT\Github\InteractiveApp'
-model_path = os.path.join(base_path, 'ANNmodel.keras')
-scaler_path = os.path.join(base_path, 'scaler.pkl')
-item_encoder_path = os.path.join(base_path, 'Item_encoder.pkl')
-area_encoder_path = os.path.join(base_path, 'Area_encoder.pkl')
+# Define relative paths
+model_path = 'ANNmodel.keras'
+scaler_path = 'scaler.pkl'
+item_encoder_path = 'Item_encoder.pkl'
+area_encoder_path = 'Area_encoder.pkl'
 
 def load_nn_model(model_path):
     try:
         model = load_model(model_path)
-        #st.success("Model loaded successfully.")
         return model
     except UnicodeDecodeError as e:
         st.error(f"Unicode Decode Error: {e}")
-        print(f"Unicode Decode Error: {e}")
+        st.stop()
+    except FileNotFoundError:
+        st.error(f"File not found: {model_path}. Please ensure the file is an accessible .keras zip file.")
+        st.stop()
     except Exception as e:
         st.error(f"Error loading model: {e}")
-        print(f"Error loading model: {e}")
+        st.stop()
 
 # Load the model
 nn_model = load_nn_model(model_path)
@@ -279,12 +281,13 @@ def load_pickle_file(path):
     try:
         with open(path, 'rb') as f:
             obj = pickle.load(f)
-        #st.success(f"Loaded {path} successfully.")
         return obj
+    except FileNotFoundError:
+        st.error(f"File not found: {path}. Please ensure the file is in the correct location.")
+        st.stop()
     except Exception as e:
         st.error(f"Error loading {path}: {e}")
-        print(f"Error loading {path}: {e}")
-        return None
+        st.stop()
 
 # Load the scaler
 scaler = load_pickle_file(scaler_path)
@@ -293,10 +296,12 @@ scaler = load_pickle_file(scaler_path)
 item_encoder = load_pickle_file(item_encoder_path)
 area_encoder = load_pickle_file(area_encoder_path)
 
-# Streamlit UI
+# Streamlit UI for prediction
 st.title("Meat Market Prediction")
 st.markdown("""---""")
 st.header("Predict Future Values")
+
+# Function to preprocess inputs similar to training data
 def preprocess_inputs(inputs):
     try:
         # Normalize the entire input array
