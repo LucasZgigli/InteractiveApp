@@ -68,8 +68,8 @@ left_column, middle_column, right_column = st.columns(3)
 with left_column:
     
     st.header(f'{Country}')
-    st.subheader(f'Average Population: {Population:,} inh')
-    st.subheader(f'Average Land Area: {Land:,}Ha')
+    st.subheader(f'Population: {Population:,} inh')
+    st.subheader(f'Land Area: {Land:,}Ha')
                        
 with middle_column:
     st.header(f'')
