@@ -355,7 +355,7 @@ else:
 
 # Use the last time + 1 for prediction
 time_input = st.slider(
-    'Time',
+    'Time: Year 51 = 2021',
     min_value=int(last_time + 1),
     max_value=int(last_time + 10),
     value=int(last_time + 1)
