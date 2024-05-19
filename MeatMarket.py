@@ -297,22 +297,27 @@ area_encoder = load_pickle_file(area_encoder_path)
 st.title("Meat Market Prediction")
 st.markdown("""---""")
 st.header("Predict Future Values")
-
 def preprocess_inputs(inputs):
-    # Normalize the entire input array
-    inputs = scaler.transform([inputs])[0]
-    return inputs
+    try:
+        # Normalize the entire input array
+        inputs = scaler.transform([inputs])[0]
+        return inputs
+    except Exception as e:
+        st.error(f"Error in preprocessing inputs: {e}")
+        st.stop()
 
 # Create input fields for user to enter prediction data
 if item_encoder and hasattr(item_encoder, 'classes_'):
     item_input = st.selectbox('Item', options=item_encoder.classes_)
 else:
-    item_input = st.selectbox('Item', options=[])
+    st.error("Error loading item encoder.")
+    st.stop()
 
 if area_encoder and hasattr(area_encoder, 'classes_'):
     area_input = st.selectbox('Area', options=area_encoder.classes_)
 else:
-    area_input = st.selectbox('Area', options=[])
+    st.error("Error loading area encoder.")
+    st.stop()
 
 # Retrieve the latest values for the selected country and item
 df_filtered = df[(df['Area'] == area_input) & (df['Item'] == item_input)].sort_values(by='Year', ascending=False)
@@ -328,7 +333,7 @@ if not df_filtered.empty:
     gdp_input = latest_record['GDP per capita in USD']  # original unit
 else:
     st.error("No data available for the selected area and item.")
-    last_production = last_supply = last_time = population_input = land_input = pastures_input = gdp_input = 0
+    st.stop()
 
 # Allow the user to adjust production and supply values up to 20% higher than the latest values
 if last_production > 0:
@@ -355,7 +360,7 @@ else:
 
 # Use the last time + 1 for prediction
 time_input = st.slider(
-    'Time: Year 51 = 2021',
+    'Time',
     min_value=int(last_time + 1),
     max_value=int(last_time + 10),
     value=int(last_time + 1)
@@ -363,18 +368,21 @@ time_input = st.slider(
 
 # Make predictions based on user inputs
 if st.button('Predict'):
-    if nn_model and scaler and item_encoder and area_encoder:
-        item_encoded = int(item_encoder.transform([item_input])[0])
-        area_encoded = int(area_encoder.transform([area_input])[0])
-        # Combine all the inputs into a list
-        inputs = [population_input, land_input, pastures_input, gdp_input, production_input, supply_input, time_input, area_encoded, item_encoded]
-        
-        # Normalize the inputs
-        processed_inputs = preprocess_inputs(inputs)
-        
-        processed_inputs = np.array([processed_inputs])  # Ensure the input is a 2D array
-        prediction = nn_model.predict(processed_inputs)
-        
-        st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f} tonnes')
-    else:
-        st.error("Required components are not fully loaded.")
+    try:
+        if nn_model and scaler and item_encoder and area_encoder:
+            item_encoded = int(item_encoder.transform([item_input])[0])
+            area_encoded = int(area_encoder.transform([area_input])[0])
+            # Combine all the inputs into a list
+            inputs = [population_input, land_input, pastures_input, gdp_input, production_input, supply_input, time_input, area_encoded, item_encoded]
+            
+            # Normalize the inputs
+            processed_inputs = preprocess_inputs(inputs)
+            
+            processed_inputs = np.array([processed_inputs])  # Ensure the input is a 2D array
+            prediction = nn_model.predict(processed_inputs)
+            
+            st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f} tonnes')
+        else:
+            st.error("Required components are not fully loaded.")
+    except Exception as e:
+        st.error(f"Error in prediction: {e}")
