@@ -61,6 +61,8 @@ df_selection_sorted = df_selection.sort_values(by='Year', ascending=False)
 most_recent_gdp_per_capita = int(df_selection_sorted['GDP per capita in USD'].iloc[0])
 GDP = most_recent_gdp_per_capita
           
+# Placing a markdown   
+st.markdown("""---""")
 #Splitting the header into 3 columns
 left_column, middle_column, right_column = st.columns(3)
 with left_column:
@@ -72,6 +74,9 @@ with left_column:
 with middle_column:
     st.subheader(f'Total Production: {Total_Production:,}t') 
     st.subheader(f'Total Export Quantity: {Total_export:,}t')
+
+    
+with middle_column:
     st.subheader(f'Total Supply Quantity: {Total_SupplyQuantity:,}t')
     st.subheader(f'GDP: {GDP:,} in Million USD') 
     
