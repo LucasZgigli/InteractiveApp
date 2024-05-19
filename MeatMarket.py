@@ -298,10 +298,10 @@ st.title("Meat Market Prediction")
 st.markdown("""---""")
 st.header("Predict Future Values")
 
-## Function to preprocess inputs similar to training data
+# Function to preprocess inputs similar to training data
 def preprocess_inputs(inputs):
-    # Normalize the numeric values
-    inputs[:6] = scaler.transform([inputs[:6]])[0]
+    # Normalize the entire input array
+    inputs = scaler.transform([inputs])[0]
     return inputs
 
 # Create input fields for user to enter prediction data
@@ -315,7 +315,6 @@ if area_encoder and hasattr(area_encoder, 'classes_'):
 else:
     area_input = st.selectbox('Area', options=[])
 
-# Retrieve the latest values for the selected country and item
 # Retrieve the latest values for the selected country and item
 df_filtered = df[(df['Area'] == area_input) & (df['Item'] == item_input)].sort_values(by='Year', ascending=False)
 
@@ -370,10 +369,10 @@ if st.button('Predict'):
         area_encoded = area_encoder.transform([area_input])[0]
         # Combine all the inputs into a list
         inputs = [population_input, land_input, pastures_input, gdp_input, production_input, supply_input, time_input, area_encoded, item_encoded]
+        # Normalize the inputs
         processed_inputs = preprocess_inputs(inputs)
         processed_inputs = np.array([processed_inputs])  # Ensure the input is a 2D array
         prediction = nn_model.predict(processed_inputs)
         st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f} tonnes')
     else:
-        st.error("Required components are not fully loaded.")
         st.error("Required components are not fully loaded.")
