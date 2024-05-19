@@ -339,7 +339,7 @@ supply_input = st.slider(
 gdp_input = GDP
 
 time_input = st.slider(
-    'Time: +1 = 1year ahead', 
+    'Time: 52 = 2022, and so on', 
     min_value=int(last_measured_time + 1), 
     max_value=int(last_measured_time + 10), 
     value=int(last_measured_time + 1)
