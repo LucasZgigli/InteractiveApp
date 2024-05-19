@@ -314,6 +314,7 @@ else:
 # Extract the last measured values for each item and country
 last_measured_production = df_selection_sorted['Production'].iloc[0] * 1000  # converting the unit
 last_measured_supply = df_selection_sorted['Domestic supply quantity'].iloc[0] * 1000  # converting the unit
+last_measured_time = df_selection_sorted['Time'].max()
 
 # Pre-filling the input fields with the values displayed in the columns
 population_input = Population
@@ -333,6 +334,8 @@ supply_input = st.slider(
 )
 gdp_input = GDP
 
+time_input = st.slider('Time', min_value=int(last_measured_time + 1), max_value=int(last_measured_time + 5), value=int(last_measured_time + 1))
+
 # Function to preprocess inputs similar to training data
 def preprocess_inputs(inputs):
     num_inputs = inputs  # Use all numerical inputs directly
@@ -343,9 +346,11 @@ def preprocess_inputs(inputs):
 
 # Make predictions based on user inputs
 if st.button('Predict'):
-    if nn_model and scaler:
+    if nn_model and scaler and item_encoder and area_encoder:
+        item_encoded = item_encoder.transform([item_input])[0]
+        area_encoded = area_encoder.transform([area_input])[0]
         # Combine all the inputs into a list
-        inputs = [population_input, land_input, pastures_input, production_input, supply_input, gdp_input]
+        inputs = [population_input, land_input, pastures_input, gdp_input, production_input, supply_input, time_input, area_encoded, item_encoded]
         processed_inputs = preprocess_inputs(inputs)
         print(f"Processed inputs for prediction: {processed_inputs}")  # Debug print
         prediction = nn_model.predict([processed_inputs])
