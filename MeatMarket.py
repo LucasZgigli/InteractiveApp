@@ -339,7 +339,7 @@ supply_input = st.slider(
 gdp_input = GDP
 
 time_input = st.slider(
-    'Time', 
+    'Time: +1 = 1year ahead', 
     min_value=int(last_measured_time + 1), 
     max_value=int(last_measured_time + 10), 
     value=int(last_measured_time + 1)
@@ -364,7 +364,7 @@ if st.button('Predict'):
         processed_inputs = np.array([processed_inputs])  # Ensure the input is a 2D array
         print(f"Processed inputs for prediction: {processed_inputs}")  # Debug print
         prediction = nn_model.predict(processed_inputs)
-        st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f} tonnes')
+        st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f}t')
     else:
         st.error("Required components are not fully loaded.")
 
