@@ -298,7 +298,6 @@ st.title("Meat Market Prediction")
 st.markdown("""---""")
 st.header("Predict Future Values")
 
-# Function to preprocess inputs similar to training data
 def preprocess_inputs(inputs):
     # Normalize the entire input array
     inputs = scaler.transform([inputs])[0]
