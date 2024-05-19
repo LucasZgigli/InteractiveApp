@@ -298,6 +298,12 @@ st.title("Meat Market Prediction")
 st.markdown("""---""")
 st.header("Predict Future Values")
 
+## Function to preprocess inputs similar to training data
+def preprocess_inputs(inputs):
+    # Normalize the numeric values
+    inputs[:6] = scaler.transform([inputs[:6]])[0]
+    return inputs
+
 # Create input fields for user to enter prediction data
 if item_encoder and hasattr(item_encoder, 'classes_'):
     item_input = st.selectbox('Item', options=item_encoder.classes_)
@@ -309,54 +315,59 @@ if area_encoder and hasattr(area_encoder, 'classes_'):
 else:
     area_input = st.selectbox('Area', options=[])
 
-
-# Function to preprocess inputs similar to training data
-def preprocess_inputs(inputs):
-    # Normalize the numeric values
-    inputs[:6] = scaler.transform([inputs[:6]])[0]
-    return inputs
-
+# Retrieve the latest values for the selected country and item
 df_filtered = df[(df['Area'] == area_input) & (df['Item'] == item_input)].sort_values(by='Year', ascending=False)
+
 if not df_filtered.empty:
     latest_record = df_filtered.iloc[0]
     last_production = latest_record['Production'] * 1000
     last_supply = latest_record['Domestic supply quantity'] * 1000
     last_time = latest_record['Time']
-    population_input = int(df_filtered['Population'].iloc[0]) * 1000  # original unit is *1000 inhabitants
-    land_input = int(df_filtered['Country area'].iloc[0] * 1000)  # same as land area multiplied by 1000 hectares
-    pastures_input = int(df_filtered['Permanent meadows and pastures'].iloc[0] * 1000)
-    gdp_input = int(df_filtered['GDP per capita in USD'].iloc[0])
-
-# Display the automatically retrieved values
-st.subheader(f"Selected Country: {area_input}")
-st.subheader(f"Selected Item: {item_input}")
-st.write(f"Population: {population_input:,} inhabitants")
-st.write(f"Land Area: {land_input:,} hectares")
-st.write(f"Permanent Meadows and Pastures: {pastures_input:,} hectares")
-st.write(f"GDP per Capita: ${gdp_input:,}")
+    population_input = int(latest_record['Population']) * 1000  # original unit is *1000 inhabitants
+    land_input = int(latest_record['Country area']) * 1000  # same as land area multiplied by 1000 hectares
+    pastures_input = int(latest_record['Permanent meadows and pastures']) * 1000
+    gdp_input = int(latest_record['GDP per capita in USD'])
+else:
+    st.error("No data available for the selected area and item.")
+    last_production = last_supply = last_time = population_input = land_input = pastures_input = gdp_input = 0
 
 # Allow the user to adjust production and supply values up to 20% higher than the latest values
-production_input = st.slider(
-    'Production (in tonnes)',
-    min_value=0,
-    max_value=int(1.2 * last_production),
-    value=int(last_production)
-)
-supply_input = st.slider(
-    'Domestic Supply Quantity (in tonnes)',
-    min_value=0,
-    max_value=int(1.2 * last_supply),
-    value=int(last_supply)
-)
+if last_production > 0:
+    production_input = st.slider(
+        'Production (in tonnes)',
+        min_value=0,
+        max_value=int(1.2 * last_production),  # Allow up to 20% more
+        value=int(last_production)
+    )
+else:
+    st.warning("No production data available for the selected area and item.")
+    production_input = 0
+
+if last_supply > 0:
+    supply_input = st.slider(
+        'Domestic Supply Quantity (in tonnes)',
+        min_value=0,
+        max_value=int(1.2 * last_supply),  # Allow up to 20% more
+        value=int(last_supply)
+    )
+else:
+    st.warning("No supply data available for the selected area and item.")
+    supply_input = 0
 
 # Use the last time + 1 for prediction
-time_input = last_time + 1
+time_input = st.slider(
+    'Time',
+    min_value=int(last_time + 1),
+    max_value=int(last_time + 10),
+    value=int(last_time + 1)
+)
 
 # Make predictions based on user inputs
 if st.button('Predict'):
     if nn_model and scaler and item_encoder and area_encoder:
         item_encoded = item_encoder.transform([item_input])[0]
         area_encoded = area_encoder.transform([area_input])[0]
+        # Combine all the inputs into a list
         inputs = [population_input, land_input, pastures_input, gdp_input, production_input, supply_input, time_input, area_encoded, item_encoded]
         processed_inputs = preprocess_inputs(inputs)
         processed_inputs = np.array([processed_inputs])  # Ensure the input is a 2D array
@@ -364,4 +375,3 @@ if st.button('Predict'):
         st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f} tonnes')
     else:
         st.error("Required components are not fully loaded.")
-
