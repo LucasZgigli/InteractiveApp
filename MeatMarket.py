@@ -332,21 +332,14 @@ supply_input = st.slider(
 )
 
 # Function to preprocess inputs similar to training data
-def preprocess_inputs(inputs):
-    num_inputs = inputs[2:]  # Extract numerical inputs
-    scaled_num_inputs = scaler.transform([num_inputs])  # Scale numerical inputs
-    preprocessed_inputs = [inputs[0]] + [inputs[1]] + scaled_num_inputs[0].tolist()  # Combine inputs
-    return preprocessed_inputs
-
-# Make predictions based on user inputs
 if st.button('Predict'):
     if nn_model and scaler and item_encoder and area_encoder:
         item_encoded = item_encoder.transform([item_input])[0]
         area_encoded = area_encoder.transform([area_input])[0]
-        inputs = [item_encoded, area_encoded, population_input, land_input, pastures_input, export_input, production_input, supply_input, gdp_input]
+        inputs = [item_encoded, area_encoded, population_input, land_input, pastures_input, production_input, supply_input, gdp_input]
         processed_inputs = preprocess_inputs(inputs)
         prediction = nn_model.predict([processed_inputs])
-        st.subheader(f'Predicted Value: {prediction[0][0]:.2f}')
+        st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f} tonnes')
     else:
         st.error("Required components are not fully loaded.")
 
