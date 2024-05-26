@@ -24,12 +24,14 @@ import pickle
 import plotly.express as px
 import streamlit as st
 import plotly.graph_objects as go
+#important libraries in the txt file
 #pip install -r requirements.txt
+
 # Load data
 df = pd.read_csv('Meat_market.csv')
 df['Item'].unique()
 
-# Set up page
+
 # Set up the Streamlit page
 st.set_page_config(page_title='Meat Market', page_icon=":flag-eu:", layout="wide")
 
@@ -88,7 +90,7 @@ with right_column:
 # Placing a markdown
 st.markdown("""---""")
 
-# Creating 2 columns
+# Creating 3 columns
 col1, col2, col3 = st.columns(3)
 
 # Grouping by item and the sum of production
@@ -195,22 +197,20 @@ fig.update_layout(
 
 # Plotting
 st.plotly_chart(fig, use_container_width=True)
-# Define paths using raw string literals
-# Define relative paths
+
+
+# Paths
 model_path = 'ANNmodel.h5'
 scaler_path = 'scaler.pkl'
 item_encoder_path = 'Item_encoder.pkl'
 area_encoder_path = 'Area_encoder.pkl'
-
+#loading the ANN model
 def load_nn_model(model_path):
     try:
         model = load_model(model_path)
         return model
-    except UnicodeDecodeError as e:
-        st.error(f"Unicode Decode Error: {e}")
-        st.stop()
     except FileNotFoundError:
-        st.error(f"File not found: {model_path}. Please ensure the file is an accessible .keras zip file.")
+        st.error(f"File not found: {model_path}.")
         st.stop()
     except Exception as e:
         st.error(f"Error loading model: {e}")
@@ -219,14 +219,14 @@ def load_nn_model(model_path):
 # Load the model
 nn_model = load_nn_model(model_path)
 
-# Function to load a pickle file
+# load a pickle file
 def load_pickle_file(path):
     try:
         with open(path, 'rb') as f:
             obj = pickle.load(f)
         return obj
     except FileNotFoundError:
-        st.error(f"File not found: {path}. Please ensure the file is in the correct location.")
+        st.error(f"File not found: {path}.")
         st.stop()
     except Exception as e:
         st.error(f"Error loading {path}: {e}")
@@ -239,7 +239,7 @@ scaler = load_pickle_file(scaler_path)
 item_encoder = load_pickle_file(item_encoder_path)
 area_encoder = load_pickle_file(area_encoder_path)
 
-# Streamlit UI for prediction
+# Streamlit for prediction
 st.title("Meat Market Prediction")
 st.markdown("""---""")
 st.header("Predict Future Values")
@@ -247,7 +247,7 @@ st.header("Predict Future Values")
 # Function to preprocess inputs similar to training data
 def preprocess_inputs(inputs):
     try:
-        # Normalize the entire input array
+        # Normalize 
         inputs = scaler.transform([inputs])[0]
         return inputs
     except Exception as e:
@@ -283,12 +283,12 @@ else:
     st.error("No data available for the selected area and item.")
     st.stop()
 
-# Allow the user to adjust production and supply values up to 20% higher than the latest values
+# Allow the production and supply values up to 25% higher than the latest values
 if last_production > 0:
     production_input = st.slider(
         'Production (in tonnes)',
         min_value=0,
-        max_value=int(1.2 * last_production),  # Allow up to 20% more
+        max_value=int(1.25 * last_production),  #up to 25% more
         value=int(last_production)
     )
 else:
@@ -299,38 +299,39 @@ if last_supply > 0:
     supply_input = st.slider(
         'Domestic Supply Quantity (in tonnes)',
         min_value=0,
-        max_value=int(1.2 * last_supply),  # Allow up to 20% more
+        max_value=int(1.25 * last_supply),  #  up to 25% more
         value=int(last_supply)
     )
 else:
     st.warning("No supply data available for the selected area and item.")
     supply_input = 0
 
-# Use the last time + 1 for prediction
+# Use the last time + 1 for predictions
 time_input = st.slider(
-    'Time',
+    'Time: +1 for each future year',
     min_value=int(last_time + 1),
     max_value=int(last_time + 10),
     value=int(last_time + 1)
 )
 
-# Make predictions based on user inputs
+# Prediction
 if st.button('Predict'):
     try:
         if nn_model and scaler and item_encoder and area_encoder:
-            item_encoded = int(item_encoder.transform([item_input])[0])
-            area_encoded = int(area_encoder.transform([area_input])[0])
-            # Combine all the inputs into a list
+            item_encoded = int(item_encoder.transform([item_input])[0])#encoding input Item 
+            area_encoded = int(area_encoder.transform([area_input])[0])#encoding input Area 
+            # list of inputs (import to not consider year)
             inputs = [population_input, land_input, pastures_input, gdp_input, production_input, supply_input, time_input, area_encoded, item_encoded]
             
-            # Normalize the inputs
+            # Scale the inputs
             processed_inputs = preprocess_inputs(inputs)
-            
-            processed_inputs = np.array([processed_inputs])  # Ensure the input is a 2D array
+            # Ensure the input is a 2D array
+            processed_inputs = np.array([processed_inputs])
+            #applying the model 
             prediction = nn_model.predict(processed_inputs)
             
-            st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f} tonnes')
+            st.subheader(f'Predicted Export Quantity: {prediction[0][0]:.2f}t')
         else:
-            st.error("Required components are not fully loaded.")
+            st.error("please check it")
     except Exception as e:
-        st.error(f"Error in prediction: {e}")
+        st.error(f"Error in : {e}")
