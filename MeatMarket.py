@@ -74,17 +74,17 @@ st.markdown("""---""")
 left_column, middle_column, right_column = st.columns(3)
 with left_column:
     st.header(f'{Country}')
-    st.subheader(f'Population: {Population:,} inh')
-    st.subheader(f'Land Area: {Land:,} Ha')
+    st.subheader(f'Population: {Population:,}inh')
+    st.subheader(f'Land Area: {Land:,}Ha')
 
 with middle_column:
     st.header(f'')
-    st.subheader(f'Total Production: {Total_Production:,} t')
-    st.subheader(f'Total Export Quantity: {Total_export:,} t')
+    st.subheader(f'Total Production: {Total_Production:,}t')
+    st.subheader(f'Total Export Quantity: {Total_export:,}t')
 
 with right_column:
     st.header(f'')
-    st.subheader(f'Total Supply Quantity: {Total_SupplyQuantity:,} t')
+    st.subheader(f'Total Supply Quantity: {Total_SupplyQuantity:,}t')
     st.subheader(f'GDP: {GDP:,} in Million USD')
 
 # Placing a markdown
@@ -308,7 +308,7 @@ else:
 
 # Use the last time + 1 for predictions
 time_input = st.slider(
-    'Time: +1 for each future year',
+    'Time (+1 for each future year):',
     min_value=int(last_time + 1),
     max_value=int(last_time + 10),
     value=int(last_time + 1)
