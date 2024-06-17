@@ -1,13 +1,9 @@
 
-matplotlib
-plotly
+streamlit
 pandas
 numpy
+tensorflow
 seaborn
 keras
-tensorflow
-streamlit
-scikit-learn
-pandas
-h5py
 scikeras
+plotly
