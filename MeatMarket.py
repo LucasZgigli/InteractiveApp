@@ -28,7 +28,7 @@ import plotly.graph_objects as go
 #pip install -r requirements.txt
 
 # Load data
-df = pd.read_csv('Meat_market.csv')
+df = pd.read_csv('Meat_market.csv',encoding='utf-8')
 df['Item'].unique()
 
 
