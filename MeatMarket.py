@@ -25,7 +25,7 @@ import plotly.express as px
 import streamlit as st
 import plotly.graph_objects as go
 #important libraries in the txt file
-pip install -r requirements.txt
+!pip install -r requirements.txt
 
 # Load data
 df = pd.read_csv('Meat_market.csv')
