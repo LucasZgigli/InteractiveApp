@@ -1,9 +1,6 @@
-
-streamlit
-pandas
-numpy
-tensorflow
-seaborn
-keras
-scikeras
-plotly
+pandas==2.2.2
+numpy<2
+tensorflow==2.14.0
+keras==2.14.0
+plotly==5.22.0
+streamlit==1.36.0
