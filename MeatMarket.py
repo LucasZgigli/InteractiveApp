@@ -10,7 +10,7 @@ import streamlit as st
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 import warnings
 warnings.simplefilter('ignore')
-!pip install requirements.txt
+
 # Load data
 df = pd.read_csv('Meat_market.csv', encoding='utf-8')
 
