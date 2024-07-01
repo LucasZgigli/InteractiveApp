@@ -335,4 +335,3 @@ if st.button('Predict'):
             st.error("please check it")
     except Exception as e:
         st.error(f"Error in : {e}")
--> thats my streamlit app 
